@@ -152,9 +152,7 @@ class PasswordResetHandler:
     def get_user(email: str) -> Optional[User]:
         try:
             return User.objects.get(email=email)
-        except (
-            User.DoesNotExist
-        ):  # нельзя возвращать ответ что такого email нет, так как могут начать подбирать email,
+        except User.DoesNotExist:  # нельзя возвращать ответ что такого email нет, так как могут начать подбирать email,
             # нужно всегда писать что письмо отправлено
             return None
 

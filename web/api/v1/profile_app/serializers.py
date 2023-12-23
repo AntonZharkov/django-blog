@@ -71,3 +71,11 @@ class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('avatar', 'full_name', 'is_active', 'date_joined', 'email', 'id')
+
+
+class TaskSerializer(serializers.Serializer):
+    task_id = serializers.CharField(max_length=255)
+
+
+class TaskStatusSerializer(serializers.Serializer):
+    status = serializers.CharField(max_length=255)

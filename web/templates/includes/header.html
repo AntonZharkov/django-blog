@@ -29,7 +29,9 @@
       <li {% if selected == 'newsline' %}class="active"{% endif %}><a href="{% url 'actions:newsline' %}">
       <i class="fa fa-info-circle"></i> Newsline</a>
       </li>
-
+      <li><a id="task" class="btn btn-dark" href="#" role="button">
+        <i class="fa fa-terminal"></i> Celery
+      </a></li>
       <form class="navbar-form navbar-right">
         <input type="text" class="form-control col-lg-8" placeholder="Search...">
       </form>

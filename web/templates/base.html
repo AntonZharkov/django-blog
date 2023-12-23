@@ -30,6 +30,8 @@
   {% endblock header %}
 </nav>
 
+<div class="task"> Task was completed</div>
+
 <div class="container">
   {% block container %}
   {% endblock container %}
@@ -42,7 +44,8 @@
 
 <script>
   $(document).ready(function(){
-    $.getScript('{% static 'auth_app/js/logout.js' %}');
+    $.getScript("{% static 'auth_app/js/logout.js' %}");
+    $.getScript("{% static 'profile_app/js/celery.js' %}");
     {% block jquery %} {% endblock jquery %}
 })
 </script>
