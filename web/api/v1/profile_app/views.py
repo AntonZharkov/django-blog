@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from celery.result import AsyncResult
 from django.contrib.auth import get_user_model
 from django.db.models import Count, F, OuterRef, Subquery, Sum
 from django.db.models.functions import Coalesce
@@ -22,8 +23,8 @@ from api.v1.profile_app.serializers import (
 )
 from api.v1.profile_app.services import ProfileUpdateService
 from blog.models import Article, Comment
+
 from src.celery import app
-from celery.result import AsyncResult
 
 if TYPE_CHECKING:
     from main.models import UserType
@@ -139,7 +140,7 @@ class UsersListView(GenericAPIView):
         return User.objects.all().order_by(F('is_active').desc(), F('date_joined').asc())
 
     def get(self, request, *args, **kwargs):
-        res: AsyncResult = app.send_task('tasks.add', args=[1,2], queue='project_1')
+        res: AsyncResult = app.send_task('tasks.add', args=[1, 2], queue='project_1')
         while res.ready() is False:
             print(res.ready())
         queryset = self.get_queryset()
@@ -153,7 +154,7 @@ class TaskSetView(GenericAPIView):
     serializer_class = TaskSerializer
 
     def get(self, request, *args, **kwargs):
-        res: AsyncResult = app.send_task('tasks.add', args=[1,2], queue='project_1')
+        res: AsyncResult = app.send_task('tasks.add', args=[1, 2], queue='project_1')
 
         serializer = self.get_serializer(res)
         return Response(serializer.data)
@@ -171,4 +172,3 @@ class TaskStatusView(GenericAPIView):
 
         serializer_task = TaskStatusSerializer(res_status)
         return Response(serializer_task.data)
-
