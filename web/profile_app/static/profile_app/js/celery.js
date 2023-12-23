@@ -1,8 +1,6 @@
 $(function () {
-
+  $('#task').on('click', getRunTask)
 });
-
-$('#task').on('click', getRunTask)
 
 function getRunTask() {
   $.ajax({
