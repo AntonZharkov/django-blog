@@ -16,6 +16,8 @@ from api.v1.profile_app.serializers import (
     ProfileUpdateAvatarSerializer,
     ProfileUpdateBIOSerializer,
     ProfileUpdatePasswordSerializer,
+    TaskSerializer,
+    TaskStatusSerializer,
     UserListSerializer,
 )
 from api.v1.profile_app.services import ProfileUpdateService
@@ -144,3 +146,29 @@ class UsersListView(GenericAPIView):
         serializer = self.get_serializer(queryset, many=True)
 
         return Response(serializer.data)
+
+
+class TaskSetView(GenericAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = TaskSerializer
+
+    def get(self, request, *args, **kwargs):
+        res: AsyncResult = app.send_task('tasks.add', args=[1,2], queue='project_1')
+
+        serializer = self.get_serializer(res)
+        return Response(serializer.data)
+
+
+class TaskStatusView(GenericAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = TaskSerializer
+
+    def get(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=self.kwargs)
+        serializer.is_valid(raise_exception=True)
+
+        res_status = AsyncResult(serializer.validated_data['task_id'])
+
+        serializer_task = TaskStatusSerializer(res_status)
+        return Response(serializer_task.data)
+
