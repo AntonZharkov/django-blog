@@ -10,7 +10,7 @@ from requests.exceptions import RequestException
 
 logger = logging.getLogger(__name__)
 
-RT = TypeVar('RT')
+RT = TypeVar("RT")
 
 
 def cached_result(
@@ -31,7 +31,9 @@ def cached_result(
     return decorator
 
 
-def execution_time(stdout: Literal['console', 'tuple'] = 'console') -> Callable[[Callable[..., RT]], Callable[..., RT]]:
+def execution_time(
+    stdout: Literal["console", "tuple"] = "console"
+) -> Callable[[Callable[..., RT]], Callable[..., RT]]:
     """
     :param stdout: 'console' or 'tuple'
     """

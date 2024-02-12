@@ -2,7 +2,7 @@ from django.apps import AppConfig
 
 
 class BlogConfig(AppConfig):
-    name = 'blog'
+    name = "blog"
 
     def ready(self):
         # Импортируйте сигналы для их регистрации.

@@ -5,15 +5,19 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('actions', '0008_eventaction'),
+        ("actions", "0008_eventaction"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='eventaction',
-            name='name',
+            model_name="eventaction",
+            name="name",
             field=models.CharField(
-                choices=[('update_avatar', 'Updated avatar'), ('create_article', 'Created new article')], max_length=255
+                choices=[
+                    ("update_avatar", "Updated avatar"),
+                    ("create_article", "Created new article"),
+                ],
+                max_length=255,
             ),
         ),
     ]

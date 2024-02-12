@@ -6,16 +6,19 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('actions', '0008_eventaction'),
-        ('main', '0005_remove_user_followers_user_following'),
+        ("actions", "0008_eventaction"),
+        ("main", "0005_remove_user_followers_user_following"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='following',
+            model_name="user",
+            name="following",
             field=models.ManyToManyField(
-                blank=True, related_name='followers', through='actions.Follower', to=settings.AUTH_USER_MODEL
+                blank=True,
+                related_name="followers",
+                through="actions.Follower",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
     ]

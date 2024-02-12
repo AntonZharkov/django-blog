@@ -1,7 +1,6 @@
 import pytest
-from django.contrib.auth import get_user_model
-
 from api.v1.auth_app.services import AuthAppService
+from django.contrib.auth import get_user_model
 
 User = get_user_model()
 

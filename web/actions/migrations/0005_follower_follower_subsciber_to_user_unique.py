@@ -5,14 +5,15 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('actions', '0004_follower'),
+        ("actions", "0004_follower"),
     ]
 
     operations = [
         migrations.AddConstraint(
-            model_name='follower',
+            model_name="follower",
             constraint=models.UniqueConstraint(
-                fields=('subsciber', 'to_user'), name='follower_subsciber_to_user_unique'
+                fields=("subsciber", "to_user"),
+                name="follower_subsciber_to_user_unique",
             ),
         ),
     ]

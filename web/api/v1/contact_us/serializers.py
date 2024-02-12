@@ -1,6 +1,5 @@
-from rest_framework import serializers
-
 from contact_us.models import Feedback
+from rest_framework import serializers
 
 
 class FeedbackSerializer(serializers.ModelSerializer):
@@ -9,11 +8,11 @@ class FeedbackSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Feedback
-        fields = ('name', 'email', 'content')
+        fields = ("name", "email", "content")
 
     def create(self, validated_data):
-        user = self.context['request'].user
+        user = self.context["request"].user
         if user.is_authenticated:
-            validated_data['name'] = user.full_name()
-            validated_data['email'] = user.email
+            validated_data["name"] = user.full_name()
+            validated_data["email"] = user.email
         return super().create(validated_data)

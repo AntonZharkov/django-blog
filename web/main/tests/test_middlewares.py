@@ -9,4 +9,4 @@ class MiddlewareTest(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(type(response.content), bytes)
-        self.assertEqual(response.content.decode('utf-8'), 'pong')
+        self.assertEqual(response.content.decode("utf-8"), "pong")

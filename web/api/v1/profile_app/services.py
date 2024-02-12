@@ -18,11 +18,11 @@ class ProfileUpdateService:
         user.save(update_fields=updated_fields)
 
     def update_password(self, user: User, data: dict):
-        user.set_password(data['password_1'])
-        user.save(update_fields=['password'])
+        user.set_password(data["password_1"])
+        user.save(update_fields=["password"])
 
     def update_avatar(self, user: User, avatar: InMemoryUploadedFile):
         if user.avatar:
             user.avatar.delete()
         user.avatar = avatar
-        user.save(update_fields=['avatar'])
+        user.save(update_fields=["avatar"])

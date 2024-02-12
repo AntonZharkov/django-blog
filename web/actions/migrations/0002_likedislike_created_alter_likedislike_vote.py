@@ -5,18 +5,20 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('actions', '0001_initial'),
+        ("actions", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='likedislike',
-            name='created',
+            model_name="likedislike",
+            name="created",
             field=models.DateTimeField(auto_now=True),
         ),
         migrations.AlterField(
-            model_name='likedislike',
-            name='vote',
-            field=models.SmallIntegerField(choices=[(1, 'Like'), (-1, 'Dislike')], verbose_name='Vote'),
+            model_name="likedislike",
+            name="vote",
+            field=models.SmallIntegerField(
+                choices=[(1, "Like"), (-1, "Dislike")], verbose_name="Vote"
+            ),
         ),
     ]

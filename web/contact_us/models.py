@@ -8,4 +8,4 @@ class Feedback(models.Model):
     content = models.TextField()
 
     class Meta:
-        verbose_name = _('Feedback')
+        verbose_name = _("Feedback")

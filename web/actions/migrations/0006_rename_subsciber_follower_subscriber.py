@@ -5,13 +5,13 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('actions', '0005_follower_follower_subsciber_to_user_unique'),
+        ("actions", "0005_follower_follower_subsciber_to_user_unique"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='follower',
-            old_name='subsciber',
-            new_name='subscriber',
+            model_name="follower",
+            old_name="subsciber",
+            new_name="subscriber",
         ),
     ]

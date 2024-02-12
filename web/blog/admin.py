@@ -12,17 +12,34 @@ from .services import AdminQueryService
 
 class CommentInline(admin.TabularInline):
     model = Comment
-    readonly_fields = ('author', 'content', 'user', 'parent')
+    readonly_fields = ("author", "content", "user", "parent")
 
 
 @admin.register(Article)
 class ArticleAdmin(SummernoteModelAdmin):
-    list_display = ('title', 'category', 'status', 'author', 'short_title', 'total_likes')
-    summernote_fields = ('content',)
-    fields = ('category', 'title', 'status', 'author', 'image', 'content', 'tags', 'created', 'updated')
-    readonly_fields = ('created', 'updated')
-    list_select_related = ('category', 'author')
-    list_filter = ('status',)
+    list_display = (
+        "title",
+        "category",
+        "status",
+        "author",
+        "short_title",
+        "total_likes",
+    )
+    summernote_fields = ("content",)
+    fields = (
+        "category",
+        "title",
+        "status",
+        "author",
+        "image",
+        "content",
+        "tags",
+        "created",
+        "updated",
+    )
+    readonly_fields = ("created", "updated")
+    list_select_related = ("category", "author")
+    list_filter = ("status",)
     inlines = [
         CommentInline,
     ]
@@ -47,12 +64,12 @@ class ArticleAdmin(SummernoteModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    fields = ('name',)
+    fields = ("name",)
 
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('author', 'format_content', 'total_likes')
+    list_display = ("author", "format_content", "total_likes")
 
     # [x]: ?
     def get_queryset(self, request):

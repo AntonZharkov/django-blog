@@ -12,7 +12,7 @@ class UserManager(BaseUserManager):
     for authentication instead of usernames.
     """
 
-    def create_user(self, email: str, password: str, **extra_fields: Any) -> 'UserType':
+    def create_user(self, email: str, password: str, **extra_fields: Any) -> "UserType":
         """
         Create and save a User with the given email and password.
         """
@@ -22,11 +22,13 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
-    def create_superuser(self, email: str, password: str, **extra_fields: Any) -> 'UserType':
+    def create_superuser(
+        self, email: str, password: str, **extra_fields: Any
+    ) -> "UserType":
         """
         Create and save a SuperUser with the given email and password.
         """
-        extra_fields['is_staff'] = True
-        extra_fields['is_superuser'] = True
-        extra_fields['is_active'] = True
+        extra_fields["is_staff"] = True
+        extra_fields["is_superuser"] = True
+        extra_fields["is_active"] = True
         return self.create_user(email, password, **extra_fields)

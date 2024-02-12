@@ -1,6 +1,5 @@
-from django.contrib import admin
-
 from actions.models import Follower
+from django.contrib import admin
 
 
 # Register your models here.

@@ -1,8 +1,7 @@
+from actions.models import EventAction, LikeDislike
 from django.contrib.auth import get_user_model
 from django.db.models import TextChoices
 from rest_framework import serializers
-
-from actions.models import EventAction, LikeDislike
 
 User = get_user_model()
 
@@ -10,12 +9,12 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'full_name')
+        fields = ("id", "email", "full_name")
 
 
 class LikeDislikeModelChoice(TextChoices):
-    ARTICLE = 'Article'
-    COMMENT = 'Comment'
+    ARTICLE = "Article"
+    COMMENT = "Comment"
 
 
 class LikeDislikeUpdateSerializer(serializers.Serializer):
@@ -27,13 +26,13 @@ class LikeDislikeUpdateSerializer(serializers.Serializer):
 class LikeDislikeFullSerializer(serializers.ModelSerializer):
     class Meta:
         model = LikeDislike
-        fields = ('user', 'vote')
+        fields = ("user", "vote")
 
 
 class FollowersSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'full_name', 'avatar', 'email', 'followers')
+        fields = ("id", "full_name", "avatar", "email", "followers")
 
 
 class FollowersUpdateDeleteSerializer(serializers.Serializer):
@@ -42,8 +41,8 @@ class FollowersUpdateDeleteSerializer(serializers.Serializer):
 
 class EventSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-    name = serializers.CharField(source='get_name_display')
+    name = serializers.CharField(source="get_name_display")
 
     class Meta:
         model = EventAction
-        fields = ('user', 'name', 'created')
+        fields = ("user", "name", "created")

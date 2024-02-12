@@ -22,9 +22,9 @@ class TemplateAPIView(APIView):
     swagger_schema = None
     permission_classes = (AllowAny,)
     renderer_classes = (JSONRenderer, TemplateHTMLRenderer)
-    template_name: str = ''
+    template_name: str = ""
 
-    def get(self, request: 'Request', *args, **kwargs):
+    def get(self, request: "Request", *args, **kwargs):
         return Response()
 
 
@@ -32,13 +32,13 @@ class SetUserTimeZone(GenericAPIView):
     serializer_class = SetTimeZoneSerializer
     authentication_classes = (SessionAuthentication,)
 
-    def post(self, request: 'Request'):
+    def post(self, request: "Request"):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         response = Response(serializer.data)
         response.set_cookie(
-            key=getattr(settings, 'TIMEZONE_COOKIE_NAME', 'timezone'),
-            value=serializer.data.get('timezone'),
-            max_age=getattr(settings, 'TIMEZONE_COOKIE_AGE', 86400),
+            key=getattr(settings, "TIMEZONE_COOKIE_NAME", "timezone"),
+            value=serializer.data.get("timezone"),
+            max_age=getattr(settings, "TIMEZONE_COOKIE_AGE", 86400),
         )
         return response

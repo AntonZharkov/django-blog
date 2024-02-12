@@ -1,7 +1,6 @@
-from django import template
-
 from api.v1.blog.serializers import CategorySerializer
 from blog.models import Category
+from django import template
 
 register = template.Library()
 

@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, NamedTuple, Optional
 from urllib.parse import urlencode, urljoin
 
 import jwt
+from api.email_services import BaseEmailHandler
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
@@ -10,6 +11,7 @@ from django.db import transaction
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.translation import gettext_lazy as _
+from main.decorators import except_shell
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
@@ -17,14 +19,10 @@ from rest_framework.utils import json
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
-from api.email_services import BaseEmailHandler
-
-from main.decorators import except_shell
-
 if TYPE_CHECKING:
     from main.models import UserType
 
-User: 'UserType' = get_user_model()
+User: "UserType" = get_user_model()
 
 
 class CreateUserData(NamedTuple):
@@ -37,26 +35,26 @@ class CreateUserData(NamedTuple):
 
 class ConfirmationEmailHandler(BaseEmailHandler):
     FRONTEND_URL = settings.FRONTEND_URL
-    FRONTEND_PATH = 'verify-email/'
-    TEMPLATE_NAME = 'email/auth_app/confirm_email.html'
+    FRONTEND_PATH = "verify-email/"
+    TEMPLATE_NAME = "email/auth_app/confirm_email.html"
 
     def _get_activate_url(self) -> str:
         url = urljoin(self.FRONTEND_URL, self.FRONTEND_PATH)
         query_params: str = urlencode(
             {
-                'key': self.user.confirmation_key,
+                "key": self.user.confirmation_key,
             },
-            safe=':+',
+            safe=":+",
         )
-        return f'{url}?{query_params}'
+        return f"{url}?{query_params}"
 
     def email_kwargs(self, **kwargs) -> dict:
         return {
-            'subject': _('Register confirmation email'),
-            'to_email': self.user.email,
-            'context': {
-                'user': self.user.full_name,
-                'activate_url': self._get_activate_url(),
+            "subject": _("Register confirmation email"),
+            "to_email": self.user.email,
+            "context": {
+                "user": self.user.full_name,
+                "activate_url": self._get_activate_url(),
             },
         }
 
@@ -85,9 +83,11 @@ class AuthAppService:
 
 
 def full_logout(request):
-    response = Response({"detail": _("Successfully logged out.")}, status=status.HTTP_200_OK)
-    auth_cookie_name = settings.REST_AUTH['JWT_AUTH_COOKIE']
-    refresh_cookie_name = settings.REST_AUTH['JWT_AUTH_REFRESH_COOKIE']
+    response = Response(
+        {"detail": _("Successfully logged out.")}, status=status.HTTP_200_OK
+    )
+    auth_cookie_name = settings.REST_AUTH["JWT_AUTH_COOKIE"]
+    refresh_cookie_name = settings.REST_AUTH["JWT_AUTH_REFRESH_COOKIE"]
 
     response.delete_cookie(auth_cookie_name)
     refresh_token = request.COOKIES.get(refresh_cookie_name)
@@ -100,8 +100,11 @@ def full_logout(request):
         response.data = {"detail": _("Refresh token was not included in request data.")}
         response.status_code = status.HTTP_401_UNAUTHORIZED
     except (TokenError, AttributeError, TypeError) as error:
-        if hasattr(error, 'args'):
-            if 'Token is blacklisted' in error.args or 'Token is invalid or expired' in error.args:
+        if hasattr(error, "args"):
+            if (
+                "Token is blacklisted" in error.args
+                or "Token is invalid or expired" in error.args
+            ):
                 response.data = {"detail": _(error.args[0])}
                 response.status_code = status.HTTP_401_UNAUTHORIZED
             else:
@@ -124,25 +127,25 @@ def full_logout(request):
 
 class ResetPasswordEmail(BaseEmailHandler):
     FRONTEND_URL = settings.FRONTEND_URL
-    FRONTEND_PATH = 'password-change/'
-    TEMPLATE_NAME = 'email/auth_app/reset_password_email.html'
+    FRONTEND_PATH = "password-change/"
+    TEMPLATE_NAME = "email/auth_app/reset_password_email.html"
 
     def _get_activate_url(self) -> str:
         url = urljoin(self.FRONTEND_URL, self.FRONTEND_PATH)
         token, uid = PasswordResetHandler().user_token_uid(self.user.email)
 
         query_params: str = urlencode(
-            {'uid': uid, 'token': token},
-            safe=':+',
+            {"uid": uid, "token": token},
+            safe=":+",
         )
-        return f'{url}?{query_params}'
+        return f"{url}?{query_params}"
 
     def email_kwargs(self, **kwargs) -> dict:
         return {
-            'subject': _('Reset password email'),
-            'to_email': self.user.email,
-            'context': {
-                'activate_url': self._get_activate_url(),
+            "subject": _("Reset password email"),
+            "to_email": self.user.email,
+            "context": {
+                "activate_url": self._get_activate_url(),
             },
         }
 
@@ -152,7 +155,9 @@ class PasswordResetHandler:
     def get_user(email: str) -> Optional[User]:
         try:
             return User.objects.get(email=email)
-        except User.DoesNotExist:  # нельзя возвращать ответ что такого email нет, так как могут начать подбирать email,
+        except (
+            User.DoesNotExist
+        ):  # нельзя возвращать ответ что такого email нет, так как могут начать подбирать email,
             # нужно всегда писать что письмо отправлено
             return None
 
@@ -175,10 +180,10 @@ class PasswordResetHandler:
             user_id = urlsafe_base64_decode(uid)
             user = User.objects.get(pk=user_id)
         except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-            raise ValidationError('Invalid uid')
+            raise ValidationError("Invalid uid")
 
         if not default_token_generator.check_token(user, token):
-            raise ValidationError('Invalid token')
+            raise ValidationError("Invalid token")
 
         return user
 
@@ -188,11 +193,13 @@ class CaptchaHandler:
         self.token = token
 
     def _get_captcha_response(self) -> dict or None:
-        url = 'https://www.google.com/recaptcha/api/siteverify'
-        params = urlencode({'secret': settings.DRF_RECAPTCHA_SECRET_KEY, 'response': self.token})
-        data = f'{url}?{params}'
+        url = "https://www.google.com/recaptcha/api/siteverify"
+        params = urlencode(
+            {"secret": settings.DRF_RECAPTCHA_SECRET_KEY, "response": self.token}
+        )
+        data = f"{url}?{params}"
         try:
-            req = urllib.request.Request(data, method='POST')
+            req = urllib.request.Request(data, method="POST")
             response = urllib.request.urlopen(req)
             return json.loads(response.read().decode())
         except urllib.error.HTTPError:
@@ -200,7 +207,7 @@ class CaptchaHandler:
 
     def check_captcha_response(self) -> bool:
         response = self._get_captcha_response()
-        if response and response['score'] >= 0.7:
+        if response and response["score"] >= 0.7:
             return True
 
         return False
@@ -208,18 +215,18 @@ class CaptchaHandler:
 
 class MicroAuthHandler:
     def __init__(self, data: dict):
-        self.token = data['token']
+        self.token = data["token"]
 
     def verify_jwt_token(self) -> int:
         access_token = AccessToken(self.token)
-        return access_token.payload['user_id']
+        return access_token.payload["user_id"]
 
     def get_user(self) -> User | None:
         user_id = self.verify_jwt_token()
         try:
             return User.objects.get(id=user_id)
         except User.DoesNotExist:
-            raise User.DoesNotExist('User does not exist')
+            raise User.DoesNotExist("User does not exist")
 
 
 class CheckChatUserHandler:

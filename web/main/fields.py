@@ -9,7 +9,7 @@ class IndentedJSONField(JSONField):
     def formfield(self, **kwargs):
         return super().formfield(
             **{
-                'form_class': IndentedJSONFormField,
+                "form_class": IndentedJSONFormField,
                 **kwargs,
             }
         )

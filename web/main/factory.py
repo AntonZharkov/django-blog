@@ -6,8 +6,8 @@ User = get_user_model()
 
 
 class UserFactory(DjangoModelFactory):
-    password = PostGenerationMethodCall('set_password', 'secret')
+    password = PostGenerationMethodCall("set_password", "secret")
 
     class Meta:
         model = User
-        django_get_or_create = ('email',)
+        django_get_or_create = ("email",)

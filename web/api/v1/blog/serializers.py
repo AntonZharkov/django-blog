@@ -1,10 +1,9 @@
+from api.v1.actions.serializers import LikeDislikeFullSerializer
+from blog.models import Article, Category, Comment
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from taggit.models import Tag
 from taggit.serializers import TaggitSerializer, TagListSerializerField
-
-from api.v1.actions.serializers import LikeDislikeFullSerializer
-from blog.models import Article, Category, Comment
 
 User = get_user_model()
 
@@ -12,11 +11,11 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'full_name', 'email')
+        fields = ("id", "full_name", "email")
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    user = serializers.SlugRelatedField(slug_field='full_name', read_only=True)
+    user = serializers.SlugRelatedField(slug_field="full_name", read_only=True)
     children = serializers.SerializerMethodField()
     votes = LikeDislikeFullSerializer(many=True)
     count_like = serializers.IntegerField()
@@ -28,7 +27,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('id', 'user', 'content', 'updated', 'children', 'count_like', 'votes')
+        fields = ("id", "user", "content", "updated", "children", "count_like", "votes")
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -36,11 +35,11 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('id', 'name', 'slug')
+        fields = ("id", "name", "slug")
 
 
 class ArticleSerializer(serializers.ModelSerializer):
-    url = serializers.CharField(source='get_absolute_url')
+    url = serializers.CharField(source="get_absolute_url")
     author = UserSerializer()
     category = CategorySerializer()
     comments_count = serializers.IntegerField()
@@ -50,17 +49,17 @@ class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = (
-            'title',
-            'url',
-            'author',
-            'category',
-            'created',
-            'updated',
-            'comments_count',
-            'image',
-            'id',
-            'count_like_dislike',
-            'votes',
+            "title",
+            "url",
+            "author",
+            "category",
+            "created",
+            "updated",
+            "comments_count",
+            "image",
+            "id",
+            "count_like_dislike",
+            "votes",
         )
 
 
@@ -68,15 +67,17 @@ class FullArticleSerializer(TaggitSerializer, ArticleSerializer):
     tags = TagListSerializerField()
 
     class Meta(ArticleSerializer.Meta):
-        fields = ArticleSerializer.Meta.fields + ('content', 'tags')
+        fields = ArticleSerializer.Meta.fields + ("content", "tags")
 
 
 class ArticleCreateSerializer(serializers.ModelSerializer):
-    category = serializers.SlugRelatedField(queryset=Category.objects.all(), slug_field='slug')
+    category = serializers.SlugRelatedField(
+        queryset=Category.objects.all(), slug_field="slug"
+    )
 
     class Meta:
         model = Article
-        fields = ('title', 'category', 'content', 'image')
+        fields = ("title", "category", "content", "image")
 
 
 class TagListSerializer(serializers.Serializer):
@@ -84,9 +85,13 @@ class TagListSerializer(serializers.Serializer):
 
 
 class CommentCreateSerializer(serializers.ModelSerializer):
-    article = serializers.SlugRelatedField(queryset=Article.objects.all(), slug_field='slug')
-    parent = serializers.PrimaryKeyRelatedField(queryset=Comment.objects.all(), allow_null=True)
+    article = serializers.SlugRelatedField(
+        queryset=Article.objects.all(), slug_field="slug"
+    )
+    parent = serializers.PrimaryKeyRelatedField(
+        queryset=Comment.objects.all(), allow_null=True
+    )
 
     class Meta:
         model = Comment
-        fields = ('content', 'article', 'parent')
+        fields = ("content", "article", "parent")

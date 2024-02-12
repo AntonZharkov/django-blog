@@ -5,18 +5,19 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('actions', '0006_rename_subsciber_follower_subscriber'),
+        ("actions", "0006_rename_subsciber_follower_subscriber"),
     ]
 
     operations = [
         migrations.RemoveConstraint(
-            model_name='follower',
-            name='follower_subsciber_to_user_unique',
+            model_name="follower",
+            name="follower_subsciber_to_user_unique",
         ),
         migrations.AddConstraint(
-            model_name='follower',
+            model_name="follower",
             constraint=models.UniqueConstraint(
-                fields=('subscriber', 'to_user'), name='follower_subscriber_to_user_unique'
+                fields=("subscriber", "to_user"),
+                name="follower_subscriber_to_user_unique",
             ),
         ),
     ]

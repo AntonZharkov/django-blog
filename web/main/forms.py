@@ -19,5 +19,7 @@ class IntegerMultipleChoiceField(forms.MultipleChoiceField):
         if not value:
             return []
         elif not isinstance(value, (list, tuple)):
-            raise forms.ValidationError(self.error_messages['invalid_list'], code='invalid_list')
+            raise forms.ValidationError(
+                self.error_messages["invalid_list"], code="invalid_list"
+            )
         return [int(val) for val in value]

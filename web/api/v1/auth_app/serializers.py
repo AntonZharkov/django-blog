@@ -1,18 +1,17 @@
+from api.v1.auth_app.services import AuthAppService
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
-from api.v1.auth_app.services import AuthAppService
-
 User = get_user_model()
 
 error_messages = {
-    'not_verified': _('Email not verified'),
-    'not_active': _('Your account is not active. Please contact Your administrator'),
-    'wrong_credentials': _('Entered email or password is incorrect'),
-    'already_registered': _('User is already registered with this e-mail address'),
-    'password_not_match': _('The two password fields did not match'),
+    "not_verified": _("Email not verified"),
+    "not_active": _("Your account is not active. Please contact Your administrator"),
+    "wrong_credentials": _("Entered email or password is incorrect"),
+    "already_registered": _("User is already registered with this e-mail address"),
+    "password_not_match": _("The two password fields did not match"),
 }
 
 
@@ -29,12 +28,16 @@ class UserSignUpSerializer(serializers.Serializer):
 
     def validate_email(self, email: str) -> str:
         if AuthAppService.is_user_exist(email):
-            raise serializers.ValidationError(_('User is already registered with this e-mail address.'))
+            raise serializers.ValidationError(
+                _("User is already registered with this e-mail address.")
+            )
         return email
 
     def validate(self, data: dict):
-        if data['password_1'] != data['password_2']:
-            raise serializers.ValidationError({'password_2': error_messages['password_not_match']})
+        if data["password_1"] != data["password_2"]:
+            raise serializers.ValidationError(
+                {"password_2": error_messages["password_not_match"]}
+            )
         return data
 
 
@@ -43,23 +46,23 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField()
 
     def authenticate(self, **kwargs):
-        return authenticate(self.context['request'], **kwargs)
+        return authenticate(self.context["request"], **kwargs)
 
     def validate(self, data: dict):
-        email = data.get('email')
-        password = data.get('password')
+        email = data.get("email")
+        password = data.get("password")
         user = self.authenticate(email=email, password=password)
         if not user:
             user = AuthAppService.get_user(email)
             if not user:
-                msg = {'email': error_messages['wrong_credentials']}
+                msg = {"email": error_messages["wrong_credentials"]}
                 raise serializers.ValidationError(msg)
             if not user.is_active:
-                msg = {'email': error_messages['not_active']}
+                msg = {"email": error_messages["not_active"]}
                 raise serializers.ValidationError(msg)
-            msg = {'email': error_messages['wrong_credentials']}
+            msg = {"email": error_messages["wrong_credentials"]}
             raise serializers.ValidationError(msg)
-        data['user'] = user
+        data["user"] = user
         return data
 
 
@@ -78,8 +81,10 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
         return password
 
     def validate(self, data: dict) -> dict:
-        if data['password_1'] != data['password_2']:
-            raise serializers.ValidationError({'password_2': error_messages['password_not_match']})
+        if data["password_1"] != data["password_2"]:
+            raise serializers.ValidationError(
+                {"password_2": error_messages["password_not_match"]}
+            )
         return data
 
 
@@ -96,7 +101,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'full_name', 'avatar')
+        fields = ("id", "full_name", "avatar")
 
 
 # TODO: ??? можно объединить эти два сериалайзера в один TokenSerializer?

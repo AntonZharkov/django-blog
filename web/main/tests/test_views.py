@@ -12,26 +12,29 @@ User = get_user_model()
 class ViewsTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.user = User.objects.create(email='james.cameron@test.com')
+        cls.user = User.objects.create(email="james.cameron@test.com")
 
     @modify_settings(
         MIDDLEWARE={
-            'append': 'main.middleware.TimezoneMiddleware',
+            "append": "main.middleware.TimezoneMiddleware",
         }
     )
     def test_set_timezone(self):
-        test_timezone = 'Europe/Kyiv'
+        test_timezone = "Europe/Kyiv"
 
         self.client.force_login(self.user)
 
-        url = reverse_lazy('set_user_timezone')
-        data = {'timezone': test_timezone}
-        response = self.client.post(url, data, format='json')
+        url = reverse_lazy("set_user_timezone")
+        data = {"timezone": test_timezone}
+        response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, HTTP_200_OK, response.data)
-        self.assertEqual(response.data['timezone'], test_timezone)
+        self.assertEqual(response.data["timezone"], test_timezone)
         self.assertEqual(
-            response.cookies.get(getattr(settings, 'TIMEZONE_COOKIE_NAME', 'timezone')).value, test_timezone
+            response.cookies.get(
+                getattr(settings, "TIMEZONE_COOKIE_NAME", "timezone")
+            ).value,
+            test_timezone,
         )
         # Request need to activate timezone after set cookies
-        self.client.get('/')
+        self.client.get("/")
         self.assertEqual(timezone.get_current_timezone_name(), test_timezone)

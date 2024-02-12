@@ -11,7 +11,7 @@ class UserChatListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'avatar', 'full_name')
+        fields = ("id", "avatar", "full_name")
 
     # def get_avatar(self, obj):
     #     return obj.get_absolute_url_for_avatar()
