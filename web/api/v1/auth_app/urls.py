@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import include, path
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
 from . import views
@@ -22,4 +22,5 @@ urlpatterns = [
     path(
         "microauth/", views.MicroAuthView.as_view(), name="microservice-authentication"
     ),
+    path("oauth2/", include("api.v1.auth_app.oauth2.urls")),
 ]

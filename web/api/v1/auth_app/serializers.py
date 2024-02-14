@@ -111,3 +111,7 @@ class CaptchaSerializer(serializers.Serializer):
 
 class MicroAuthSerializer(serializers.Serializer):
     token = serializers.CharField()
+
+
+class StateSerializer(serializers.Serializer):
+    state = serializers.CharField()
