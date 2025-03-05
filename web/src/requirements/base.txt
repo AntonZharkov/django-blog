@@ -28,6 +28,9 @@ djangorestframework-simplejwt~=5.2
 # ImageField
 pillow~=9.5
 
+# Timezone
+pytz==2025.1
+
 # Translation
 django-rosetta~=0.9
 
